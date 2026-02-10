@@ -24,7 +24,7 @@ public class SecurityConfig {
                 .requestMatchers(HttpMethod.GET, "/items/new").hasRole("ADMIN")
                 .requestMatchers(HttpMethod.POST, "/items").hasRole("ADMIN")
                 .anyRequest().authenticated())
-                .formLogin(AbstractAuthenticationFilterConfigurer::permitAll)
+                .formLogin(form -> form.loginPage("/login").permitAll())
                 .logout(LogoutConfigurer::permitAll);
         return http.build();
     }
