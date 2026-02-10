@@ -1,44 +1,30 @@
-package com.example.items.controller;
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Items</title>
+    <meta charset="UTF-8"/>
+</head>
+<body>
+<h2>Item List</h2>
 
-import com.example.items.model.Item;
-import com.example.items.service.ItemService;
-import jakarta.validation.Valid;
-import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
-import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.*;
+<a href="/items/new">+ Add New Item</a>
 
-@Controller
-public class ItemController {
-
-private final ItemService itemService;
-
-public ItemController(ItemService itemService) {
-this.itemService = itemService;
-}
-
-// GET /items -> list page
-@GetMapping("/items")
-public String list(Model model) {
-model.addAttribute("items", itemService.findAll());
-return "items/list";
-}
-
-// GET /items/new -> create form
-@GetMapping("/items/new")
-public String newForm(Model model) {
-model.addAttribute("item", new Item());
-return "items/form";
-}
-
-// POST /items -> validate, save, redirect
-@PostMapping("/items")
-public String create(@Valid @ModelAttribute("item") Item item,
-BindingResult bindingResult) {
-if (bindingResult.hasErrors()) {
-return "items/form";
-}
-itemService.add(item);
-return "redirect:/items";
-}
-}
+<table border="1" cellpadding="6" cellspacing="0" style="margin-top:10px;">
+    <thead>
+    <tr>
+        <th>ID</th><th>Name</th><th>Quantity</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:if="${#lists.isEmpty(items)}">
+        <td colspan="3">No items yet.</td>
+    </tr>
+    <tr th:each="i : ${items}">
+        <td th:text="${i.id}"></td>
+        <td th:text="${i.name}"></td>
+        <td th:text="${i.quantity}"></td>
+    </tr>
+    </tbody>
+</table>
+</body>
+</html>
