@@ -1,36 +1,163 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
 <head>
     <title>Items</title>
     <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1"/>
+
+    <style>
+        :root{
+            --bg: #f7f7f8;
+            --card: #ffffff;
+            --text: #111827;
+            --muted: #6b7280;
+            --border: #e5e7eb;
+            --accent: #2563eb;
+            --radius: 12px;
+        }
+
+        *{ box-sizing: border-box; }
+        body{
+            margin: 0;
+            font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Arial;
+            background: var(--bg);
+            color: var(--text);
+            padding: 28px 16px;
+        }
+
+        .wrap{ max-width: 920px; margin: 0 auto; }
+
+        .topbar{
+            display:flex;
+            align-items:center;
+            justify-content:space-between;
+            gap: 12px;
+            margin-bottom: 16px;
+        }
+
+        .title{
+            margin: 0;
+            font-size: 18px;
+            font-weight: 800;
+        }
+
+        .actions{
+            display:flex;
+            gap: 10px;
+            align-items:center;
+        }
+
+        .btn{
+            border-radius: 10px;
+            padding: 10px 12px;
+            font-weight: 700;
+            border: 1px solid var(--border);
+            background: #fff;
+            cursor: pointer;
+            text-decoration:none;
+            color: var(--text);
+        }
+        .btn:hover{ background: #f3f4f6; }
+
+        .btn-primary{
+            border-color: rgba(37,99,235,0.25);
+            background: var(--accent);
+            color:#fff;
+        }
+        .btn-primary:hover{ filter: brightness(0.98); background: var(--accent); }
+
+        .card{
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            overflow: hidden;
+        }
+
+        .meta{
+            padding: 14px 16px;
+            border-bottom: 1px solid var(--border);
+            display:flex;
+            justify-content:space-between;
+            align-items:center;
+            gap: 12px;
+        }
+        .meta p{ margin:0; color: var(--muted); font-size: 13px; }
+
+        table{
+            width: 100%;
+            border-collapse: collapse;
+        }
+        th, td{
+            padding: 12px 16px;
+            border-bottom: 1px solid var(--border);
+            text-align:left;
+            font-size: 14px;
+        }
+        th{
+            font-size: 12px;
+            color: var(--muted);
+            text-transform: uppercase;
+            letter-spacing: .08em;
+            background: #fafafa;
+        }
+        tr:last-child td{ border-bottom: none; }
+
+        .empty{
+            padding: 16px;
+            color: var(--muted);
+            font-size: 14px;
+        }
+
+        form.inline{ display:inline; margin:0; }
+    </style>
 </head>
+
 <body>
-<h2>Item List</h2>
+<div class="wrap">
+    <div class="topbar">
+        <h1 class="title">Items</h1>
 
-<a href="/items/new">+ Add New Item</a>
+        <div class="actions">
+            <a class="btn btn-primary" href="/items/new">+ Add item</a>
 
-<table border="1" cellpadding="6" cellspacing="0" style="margin-top:10px;">
-    <thead>
-    <tr>
-        <th>ID</th><th>Name</th><th>Quantity</th>
-    </tr>
-    </thead>
-    <tbody>
-    <tr th:if="${#lists.isEmpty(items)}">
-        <td colspan="3">No items yet.</td>
-    </tr>
-    <tr th:each="i : ${items}">
-        <td th:text="${i.id}"></td>
-        <td th:text="${i.name}"></td>
-        <td th:text="${i.quantity}"></td>
-    </tr>
-    </tbody>
-</table>
-<form th:action="@{/logout}" method="post" style="display:inline">
-    <input type="hidden"
-           th:name="${_csrf.parameterName}"
-           th:value="${_csrf.token}" />
-    <button type="submit">Logout</button>
-</form>
+            <form class="inline" th:action="@{/logout}" method="post">
+                <input type="hidden"
+                       th:name="${_csrf.parameterName}"
+                       th:value="${_csrf.token}" />
+                <button class="btn" type="submit">Logout</button>
+            </form>
+        </div>
+    </div>
+
+    <div class="card">
+        <div class="meta">
+            <p>Simple list of items</p>
+            <p th:if="${items != null}">
+                Total: <strong th:text="${#lists.size(items)}">0</strong>
+            </p>
+        </div>
+
+        <div class="empty" th:if="${#lists.isEmpty(items)}">
+            No items yet. Click <strong>“Add item”</strong> to create one.
+        </div>
+
+        <table th:if="${!#lists.isEmpty(items)}" aria-label="Items table">
+            <thead>
+            <tr>
+                <th style="width:120px;">ID</th>
+                <th>Name</th>
+                <th style="width:160px;">Quantity</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="i : ${items}">
+                <td th:text="${i.id}"></td>
+                <td th:text="${i.name}"></td>
+                <td th:text="${i.quantity}"></td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
 </body>
 </html>
