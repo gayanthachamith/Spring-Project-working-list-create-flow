@@ -1,11 +1,11 @@
-package module16.controller;
+package com.example.springprojectworkinglistcreateflow.controller;
 
 
 
 
 import jakarta.validation.Valid;
-import module16.model.Item;
-import module16.service.ItemService;
+import com.example.springprojectworkinglistcreateflow.model.Item;
+import com.example.springprojectworkinglistcreateflow.service.ItemService;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;

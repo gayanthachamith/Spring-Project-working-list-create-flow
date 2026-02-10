@@ -1,6 +1,6 @@
-package module16.service;
+package com.example.springprojectworkinglistcreateflow.service;
 
-import module16.model.Item;
+import com.example.springprojectworkinglistcreateflow.model.Item;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
