@@ -3,6 +3,9 @@ package com.example.springprojectworkinglistcreateflow.service;
 import com.example.springprojectworkinglistcreateflow.entity.Items;
 import com.example.springprojectworkinglistcreateflow.repository.ItemRepository;
 import org.springframework.stereotype.Service;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 
 import java.util.List;
 
@@ -10,6 +13,10 @@ import java.util.List;
 public class ItemService {
     private final ItemRepository repo;
 
+    // find page for pagination
+    public Page<Items> findPage(int page, int size) {
+        return repo.findAll(PageRequest.of(page, size, Sort.by("id").ascending()));
+    }
 
     public ItemService(ItemRepository repo) {
         this.repo = repo;
