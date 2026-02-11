@@ -144,16 +144,16 @@
 <body>
 <div class="wrap">
     <div class="topbar">
-        <div class="left">
-            <h1 class="title">Items</h1>
-            <div class="userline">
-                Logged in as:
-                <strong th:text="${#authentication.name}">username</strong>
-            </div>
-        </div>
+        <h1 class="title">Items</h1>
 
         <div class="actions">
-            <a class="btn btn-primary" href="/items/new">+ Add item</a>
+        <span class="userline" sec:authorize="isAuthenticated()">
+            Logged in as: <strong sec:authentication="name"></strong>
+        </span>
+
+            <a class="btn btn-primary" href="/items/new" sec:authorize="hasRole('ADMIN')">
+                + Add item
+            </a>
 
             <form class="inline" th:action="@{/logout}" method="post">
                 <input type="hidden"
@@ -163,6 +163,7 @@
             </form>
         </div>
     </div>
+
 
     <div class="card">
         <div class="meta">
