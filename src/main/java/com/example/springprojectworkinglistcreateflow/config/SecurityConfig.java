@@ -1,5 +1,6 @@
 package com.example.springprojectworkinglistcreateflow.config;
 
+import jakarta.servlet.RequestDispatcher;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
@@ -13,6 +14,8 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.boot.autoconfigure.security.servlet.PathRequest;
+
 
 @Configuration
 @EnableWebSecurity
@@ -20,12 +23,18 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http.authorizeHttpRequests(authorizeRequests -> authorizeRequests
+                .requestMatchers("/css/**", "/js/**", "/images/**", "/favicon.ico", "/test.txt").permitAll()
+                .requestMatchers("/error/**", "/login").permitAll()
+
                 .requestMatchers(HttpMethod.GET, "/items").hasAnyRole("USER", "ADMIN")
                 .requestMatchers(HttpMethod.GET, "/items/new").hasRole("ADMIN")
                 .requestMatchers(HttpMethod.POST, "/items").hasRole("ADMIN")
                 .anyRequest().authenticated())
                 .formLogin(form -> form.loginPage("/login")
                         .defaultSuccessUrl("/items", true).permitAll())
+                .exceptionHandling(ex -> ex
+                        .accessDeniedHandler((req, res, e) -> res.sendError(403))
+                )
                 .logout(LogoutConfigurer::permitAll);
         return http.build();
     }
