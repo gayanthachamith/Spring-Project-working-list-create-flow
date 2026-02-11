@@ -1,6 +1,7 @@
 package com.example.springprojectworkinglistcreateflow.service;
 
 import com.example.springprojectworkinglistcreateflow.entity.Items;
+import com.example.springprojectworkinglistcreateflow.dto.ItemForm;
 import com.example.springprojectworkinglistcreateflow.repository.ItemRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.data.domain.Page;
@@ -26,8 +27,11 @@ public class ItemService {
         return repo.findAll();
     }
 
-    public Items add(Items item) {
-        return repo.save(item);
+    public Items add(ItemForm item) {
+        Items entity = new Items();
+        entity.setName(item.getName());
+        entity.setQuantity(item.getQuantity());
+        return repo.save(entity);
     }
 
     public Items findByIdOrThrow(Long id){
@@ -35,11 +39,20 @@ public class ItemService {
 
     }
 
-    public Items update(Long id, Items updated){
-        Items exiting =  findByIdOrThrow(id);
-        exiting.setName(updated.getName());
-        exiting.setQuantity(updated.getQuantity());
-        return repo.save(exiting);
+    public Items update(Long id, ItemForm form){
+        Items existing = findByIdOrThrow(id);
+        existing.setName(form.getName());
+        existing.setQuantity(form.getQuantity());
+        return repo.save(existing);
+    }
+
+    public ItemForm getFormForEdit(Long id) {
+        Items item = findByIdOrThrow(id);
+        ItemForm form = new ItemForm();
+        form.setId(item.getId());      
+        form.setName(item.getName());
+        form.setQuantity(item.getQuantity());
+        return form;
     }
 
     public void delete(Long id) {

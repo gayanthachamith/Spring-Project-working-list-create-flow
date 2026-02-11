@@ -4,8 +4,8 @@ package com.example.springprojectworkinglistcreateflow.controller;
 
 
 import com.example.springprojectworkinglistcreateflow.entity.Items;
+import com.example.springprojectworkinglistcreateflow.dto.ItemForm;
 import jakarta.validation.Valid;
-import com.example.springprojectworkinglistcreateflow.model.Item;
 import com.example.springprojectworkinglistcreateflow.service.ItemService;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
@@ -40,12 +40,12 @@ public class ItemController {
 
     @GetMapping("/items/new")
     public String newForm(Model model) {
-        model.addAttribute("item", new Items());
+        model.addAttribute("item", new ItemForm());
         return "items/form";
     }
 
     @PostMapping("/items")
-    public String create(@Valid @ModelAttribute("item") Items item,
+    public String create(@Valid @ModelAttribute("item") ItemForm item,
                          BindingResult bindingResult) {
         if (bindingResult.hasErrors()) {
             return "items/form";
@@ -57,8 +57,16 @@ public class ItemController {
     @GetMapping("/items/{id}/edit")
     public String editForm(@PathVariable Long id, Model model){
         try {
-            model.addAttribute("item", itemService.findByIdOrThrow(id));
+            Items entity = itemService.findByIdOrThrow(id);
+
+            ItemForm form = new ItemForm();
+            form.setId(entity.getId());
+            form.setName(entity.getName());
+            form.setQuantity(entity.getQuantity());
+
+            model.addAttribute("item", form);
             model.addAttribute("mode", "edit");
+
             return "items/form";
         } catch (IllegalArgumentException ex) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Item not found");
@@ -67,7 +75,7 @@ public class ItemController {
 
     @PutMapping("/items/{id}")
     public String update(@PathVariable Long id,
-                         @Valid @ModelAttribute("item") Items item,
+                         @Valid @ModelAttribute("item") ItemForm item,
                          BindingResult bindingResult,
                          Model model) {
         if (bindingResult.hasErrors()) {
