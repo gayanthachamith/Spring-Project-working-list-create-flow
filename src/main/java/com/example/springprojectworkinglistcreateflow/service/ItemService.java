@@ -23,4 +23,24 @@ public class ItemService {
         return repo.save(item);
     }
 
+    public Items findByIdOrThrow(Long id){
+        return repo.findById(id).orElseThrow(() ->  new IllegalArgumentException("item not found" + id));
+
+    }
+
+    public Items update(Long id, Items updated){
+        Items exiting =  findByIdOrThrow(id);
+        exiting.setName(updated.getName());
+        exiting.setQuantity(updated.getQuantity());
+        return repo.save(exiting);
+    }
+
+    public void delete(Long id) {
+        if (!repo.existsById(id)) {
+            throw new IllegalArgumentException("Item not found " + id);
+        }
+        repo.deleteById(id);
+
+    }
+
 }

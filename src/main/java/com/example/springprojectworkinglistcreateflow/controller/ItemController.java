@@ -7,10 +7,12 @@ import com.example.springprojectworkinglistcreateflow.entity.Items;
 import jakarta.validation.Valid;
 import com.example.springprojectworkinglistcreateflow.model.Item;
 import com.example.springprojectworkinglistcreateflow.service.ItemService;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.server.ResponseStatusException;
 
 @Controller
 public class ItemController {
@@ -40,5 +42,43 @@ public class ItemController {
         }
         itemService.add(item);
         return "redirect:/items";
+    }
+
+    @GetMapping("/items/{id}/edit")
+    public String editForm(@PathVariable Long id, Model model){
+        try {
+            model.addAttribute("item", itemService.findByIdOrThrow(id));
+            model.addAttribute("mode", "edit");
+            return "items/form";
+        } catch (IllegalArgumentException ex) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Item not found");
+        }
+    }
+
+    @PutMapping("/items/{id}")
+    public String update(@PathVariable Long id,
+                         @Valid @ModelAttribute("item") Items item,
+                         BindingResult bindingResult,
+                         Model model) {
+        if (bindingResult.hasErrors()) {
+            model.addAttribute("mode", "edit");
+            return "items/form";
+        }
+        try {
+            itemService.update(id, item);
+            return "redirect:/items";
+        } catch (IllegalArgumentException ex) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Item not found");
+        }
+    }
+
+    @DeleteMapping("/items/{id}/delete")
+    public String delete(@PathVariable Long id) {
+        try {
+            itemService.delete(id);
+            return "redirect:/items";
+        } catch (IllegalArgumentException ex) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Item not found");
+        }
     }
 }
