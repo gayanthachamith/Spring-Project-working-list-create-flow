@@ -13,6 +13,7 @@ import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
+import org.springframework.data.domain.Page;
 
 @Controller
 public class ItemController {
@@ -23,8 +24,17 @@ public class ItemController {
     }
 
     @GetMapping("/items")
-    public String list(Model model) {
-        model.addAttribute("items", itemService.findAll());
+    public String list(@RequestParam(defaultValue = "0") int page, Model model) {
+        int size = 10; // 10 elements for page for pagination
+
+        Page<Items> itemsPage = itemService.findPage(page, size);
+
+        model.addAttribute("items", itemsPage.getContent());
+        model.addAttribute("itemsPage", itemsPage);
+        model.addAttribute("currentPage", page);
+        model.addAttribute("totalPages", itemsPage.getTotalPages());
+        model.addAttribute("totalItems", itemsPage.getTotalElements());
+
         return "items/list";
     }
 
