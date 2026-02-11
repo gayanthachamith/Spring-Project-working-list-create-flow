@@ -203,8 +203,8 @@
             </tr>
             </thead>
             <tbody>
-            <tr th:each="i : ${items}">
-                <td th:text="${i.id}"></td>
+            <tr th:each="i, iterStat : ${items}">
+            <td th:text="${iterStat.count}"></td>
                 <td th:text="${i.name}"></td>
                 <td th:text="${i.quantity}"></td>
                 <td sec:authorize="hasRole('ADMIN')">
